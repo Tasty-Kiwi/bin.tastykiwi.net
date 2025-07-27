@@ -24,6 +24,12 @@ SOFTWARE.
 
 import { Environment, HTTPError } from "../..";
 
+const config = {
+  DOCUMENT_KEY_SIZE: 8,
+  DOCUMENT_EXPIRE_TTL: 604800,
+  MAX_DOCUMENT_SIZE: 100000,
+}
+
 function generateId(size: number): string {
   let id = "";
   const keyspace = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -36,20 +42,21 @@ function generateId(size: number): string {
 }
 
 export const onRequestPost: PagesFunction<Environment> = async ({ request, env }) => {
+  console.log(env)
   const length = Number(request.headers.get("Content-Length") || 0);
 
   if (!length) {
     throw new HTTPError(400, "Content must contain at least one character.");
   }
 
-  if (length > env.MAX_DOCUMENT_SIZE) {
-    throw new HTTPError(400, `Content must be shorter than ${env.MAX_DOCUMENT_SIZE} characters (was ${length}).`);
+  if (length > config.MAX_DOCUMENT_SIZE) {
+    throw new HTTPError(400, `Content must be shorter than ${config.MAX_DOCUMENT_SIZE} characters (was ${length}).`);
   }
 
   const content = await request.text();
-  const id = generateId(env.DOCUMENT_KEY_SIZE);
+  const id = generateId(config.DOCUMENT_KEY_SIZE);
 
-  await env.STORAGE.put(`documents:${id}`, content, { expirationTtl: env.DOCUMENT_EXPIRE_TTL });
+  await env.STORAGE.put(`documents:${id}`, content, { expirationTtl: config.DOCUMENT_EXPIRE_TTL });
 
   const domain = new URL(request.url).hostname;
 
