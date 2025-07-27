@@ -42,7 +42,6 @@ function generateId(size: number): string {
 }
 
 export const onRequestPost: PagesFunction<Environment> = async ({ request, env }) => {
-  console.log(env)
   const length = Number(request.headers.get("Content-Length") || 0);
 
   if (!length) {
