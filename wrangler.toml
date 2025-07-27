@@ -1,0 +1,4 @@
+name = ""
+compatibility_date = "2025-07-27"
+
+pages_build_output_dir = "./static"
