@@ -3,20 +3,11 @@ name = "bin-tastykiwi-net"
 pages_build_output_dir = "static"
 compatibility_date = "2025-07-27"
 
-[[env.production.kv_namespaces]]
-id = "4a5798f46cb94e9b8269b2100e55462e"
-binding = "STORAGE"
-
 [[kv_namespaces]]
 id = "4a5798f46cb94e9b8269b2100e55462e"
 binding = "STORAGE"
 
 [vars]
-DOCUMENT_KEY_SIZE = 8
-DOCUMENT_EXPIRE_TTL = 604800
-MAX_DOCUMENT_SIZE = 100000
-
-[env.production.vars]
 DOCUMENT_KEY_SIZE = 8
 DOCUMENT_EXPIRE_TTL = 604800
 MAX_DOCUMENT_SIZE = 100000
