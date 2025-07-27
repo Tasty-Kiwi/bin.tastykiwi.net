@@ -1,5 +1,5 @@
 {
-  "name": "starbin",
+  "name": "bin.tastykiwi.net",
   "version": "1.0.0",
   "description": "A hastebin-compatible paste site running on Cloudflare Workers.",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LostLuma/starbin.git"
+    "url": "git+https://github.com/Tasty-Kiwi/bin.tastykiwi.net.git"
   },
-  "author": "Lilly Rose Berner <lilly@lostluma.dev> (https://lostluma.dev)",
+  "author": "Dominykas M. <hello@tastykiwi.net> (https://tastykiwi.net)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/LostLuma/starbin/issues"
+    "url": "https://github.com/Tasty-Kiwi/bin.tastykiwi.net/issues"
   },
-  "homepage": "https://starb.in",
+  "homepage": "https://bin.tastykiwi.net",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250726.0",
     "prettier": "^3.6.2",
