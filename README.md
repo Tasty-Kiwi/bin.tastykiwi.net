@@ -1,4 +1,10 @@
-# Starbin
+# Kiwibin
+
+A starbin fork used in [bin.tastykiwi.net](https://bin.tastykiwi.net).
+
+Updated to work with the newest version of Wrangler CLI.
+
+---
 
 A hastebin-compatible paste site running on Cloudflare Workers / Pages.
 

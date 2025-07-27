@@ -1,4 +1,13 @@
-name = "starbin"
+name = "bin-tastykiwi-net"
 compatibility_date = "2025-07-27"
 
 pages_build_output_dir = "./static"
+
+[[kv_namespaces]]
+binding = "STORAGE"
+id = "4a5798f46cb94e9b8269b2100e55462e"
+
+[vars]
+DOCUMENT_KEY_SIZE = 8
+DOCUMENT_EXPIRE_TTL = 604800
+MAX_DOCUMENT_SIZE = 100000
