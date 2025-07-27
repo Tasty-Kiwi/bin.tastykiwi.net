@@ -1,6 +1,6 @@
-https://starbin.pages.dev/*
+https://bin.tastykiwi.net/*
   X-Robots-Tag: noindex
-  Link: <https://starb.in/:splat>; rel="canonical"
+  Link: <https://bin.tastykiwi.net/:splat>; rel="canonical"
 
-https://:commit.starbin.pages.dev/*
-  Link: <https://starb.in/:splat>; rel="canonical"
+https://:commit.bin.tastykiwi.net/*
+  Link: <https://bin.tastykiwi.net/:splat>; rel="canonical"
