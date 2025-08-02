@@ -26,7 +26,7 @@ import { Environment, HTTPError } from "../..";
 
 const config = {
   DOCUMENT_KEY_SIZE: 8,
-  DOCUMENT_EXPIRE_TTL: 604800,
+  DOCUMENT_EXPIRE_TTL: 60 * 60 * 24 * 365, // 1 year
   MAX_DOCUMENT_SIZE: 100000,
 }
 
