@@ -51,7 +51,7 @@ Configure the `STORAGE` KV namespace and the documented Worker variables in `wra
 npm run deploy
 ```
 
-The build writes the Vite frontend to `dist/`; Wrangler serves that directory as the Worker asset binding.
+The build writes the Vite frontend to `dist/`; Wrangler serves that directory as the Worker asset binding. Wrangler also runs `npm run build` automatically before deployment, so a direct `npx wrangler deploy` is safe for production build environments.
 
 ## Preview security
 
