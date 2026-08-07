@@ -51,7 +51,10 @@ function currentLocation(): string {
 }
 
 function viewForDocument(route: Extract<Route, { type: "document" }>, previewFormat: AppState["previewFormat"]): ViewMode {
-  return route.preview && previewFormat !== null ? "preview" : "code";
+  if (route.view === "code") {
+    return "code";
+  }
+  return previewFormat !== null ? "preview" : "code";
 }
 
 export function App() {
@@ -262,7 +265,7 @@ export function App() {
     }
 
     if (state.locked && state.key) {
-      const hash = view === "preview" ? "#preview" : "";
+      const hash = view === "preview" ? "#preview" : "#code";
       window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}${hash}`);
     }
     setState((current) => ({ ...current, view }));

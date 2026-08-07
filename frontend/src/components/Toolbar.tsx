@@ -37,7 +37,7 @@ export function Toolbar({
 
   return (
     <header className="toolbar">
-      <a className="brand" href="/" onClick={(event) => { event.preventDefault(); onNew(); }}>
+      <a className="brand" href="/about.md">
         <span className="brand-mark" aria-hidden="true"><Icon name="leaf" size={20} /></span>
         <span className="brand-name">kiwibin</span>
         <span className="brand-tag">paste / share</span>

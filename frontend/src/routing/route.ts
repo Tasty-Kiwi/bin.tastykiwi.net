@@ -1,13 +1,13 @@
 export type Route =
   | { type: "new" }
-  | { type: "document"; key: string; extension?: string; preview?: boolean }
+  | { type: "document"; key: string; extension?: string; view?: "preview" | "code" }
   | { type: "raw"; key: string }
   | { type: "unsupported" };
 
 export function parseRoute(location: string): Route {
   const [locationWithoutHash, hash] = location.split("#", 2);
   const path = (locationWithoutHash?.split("?", 1)[0] ?? "/");
-  const wantsPreview = hash === "preview";
+  const view = hash === "preview" || hash === "code" ? hash : undefined;
   if (path === "/" || path === "") {
     return { type: "new" };
   }
@@ -31,7 +31,7 @@ export function parseRoute(location: string): Route {
     type: "document",
     key: decodeURIComponent(key),
     ...(extension ? { extension: extension.toLowerCase() } : {}),
-    ...(wantsPreview ? { preview: true } : {}),
+    ...(view ? { view } : {}),
   };
 }
 

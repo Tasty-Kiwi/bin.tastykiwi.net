@@ -23,7 +23,16 @@ describe("parseRoute", () => {
       type: "document",
       key: "abc123",
       extension: "md",
-      preview: true,
+      view: "preview",
+    });
+  });
+
+  it("parses the code anchor", () => {
+    expect(parseRoute("/abc123.md#code")).toEqual({
+      type: "document",
+      key: "abc123",
+      extension: "md",
+      view: "code",
     });
   });
 
