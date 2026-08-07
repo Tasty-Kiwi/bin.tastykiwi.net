@@ -10,9 +10,12 @@
   "author": "Dominykas M. <hello@tastykiwi.net> (https://tastykiwi.net)",
   "license": "MIT",
   "scripts": {
-    "build:frontend": "esbuild static/application.js --minify --target=es2017 --outfile=static/application.min.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "wrangler publish"
+    "build": "npm run typecheck && vite build",
+    "dev": "vite",
+    "dev:worker": "wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "bugs": {
     "url": "https://github.com/Tasty-Kiwi/bin.tastykiwi.net/issues"
@@ -20,9 +23,19 @@
   "homepage": "https://bin.tastykiwi.net",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250726.0",
-    "esbuild": "^0.25.4",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^26.2.0",
+    "jsdom": "^30.0.1",
     "prettier": "^3.6.2",
     "typescript": "^6.0.3",
+    "vite": "^7.3.6",
+    "vitest": "^3.2.7",
     "wrangler": "^4.26.0"
+  },
+  "dependencies": {
+    "dompurify": "^3.4.13",
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^15.0.0",
+    "preact": "^10.29.8"
   }
 }

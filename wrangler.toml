@@ -2,7 +2,7 @@ name = "bin-tastykiwi-net"
 main = "index.ts"
 compatibility_date = "2026-06-23"
 
-assets = { directory = "static", binding = "ASSETS" }
+assets = { directory = "dist", binding = "ASSETS" }
 
 [[kv_namespaces]]
 binding = "STORAGE"

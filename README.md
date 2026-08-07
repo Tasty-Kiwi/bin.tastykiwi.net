@@ -1,32 +1,62 @@
 # Kiwibin
 
-A starbin fork used in [bin.tastykiwi.net](https://bin.tastykiwi.net).
+Kiwibin is a lightweight Hastebin-compatible paste site running on Cloudflare Workers and KV.
 
-Updated to work with the newest version of Wrangler CLI.
+The repository contains two small layers:
 
----
+```text
+Cloudflare Worker
+├── Hastebin-compatible API
+└── Vite-built Preact frontend
+```
 
-A hastebin-compatible paste site running on Cloudflare Workers / Pages.
+The frontend is written in TypeScript and keeps paste format in the URL extension, so existing clients and routes remain compatible:
 
-# Deployment
+- `POST /documents` — create a plain-text paste
+- `GET /documents/:key` — retrieve paste JSON
+- `GET /raw/:key` — retrieve paste text
+- `/:key` — view a paste
+- `/:key.:extension` — view a paste with a syntax/format hint
 
-To deploy as a Pages project you will need to follow these steps:
+## Local development
 
-- Fork this repo to an account where you can install GitHub Apps
-- Create an empty KV namespace to store pastes in on the Workers dashboard
-- Create a new Pages project using the Git integration and your forked repo
-  - Set an empty ``echo`` command as the build command - no actual build is performed
-  - Set the build output directory to ``/static/`` to allow Pages to find the website
-- Under the project's settings in the Functions tab set up a new KV namespace binding
-  - Set the variable name to ``STORAGE``, the namespace to the namespace from earlier
-- Under the project's Environment Variables settings set up the following variables:
-  - ``DOCUMENT_KEY_SIZE``: Number of digits to use for document URLs
-  - ``MAX_DOCUMENT_SIZE``: Maximum number of characters allowed per paste
-  - ``DOCUMENT_EXPIRE_TTL``: Number of seconds until documents expire
+Install dependencies:
 
-And that's it! You may now set a custom domain if you'd like the site to be available outside of workers.dev
+```sh
+npm install
+```
 
-# TODO
+Run the frontend and Worker in separate terminals:
 
-I did not invest any time into creating my own frontend yet, all static
-assets are copied from the original [haste-server](https://github.com/seejohnrun/haste-server).
+```sh
+npm run dev
+npm run dev:worker
+```
+
+Vite runs at `http://localhost:5173` and proxies `/documents` and `/raw` to the local Worker at `http://127.0.0.1:8787`.
+
+Run the checks and production build with:
+
+```sh
+npm run typecheck
+npm test
+npm run build
+```
+
+## Deployment
+
+Configure the `STORAGE` KV namespace and the documented Worker variables in `wrangler.toml`, then run:
+
+```sh
+npm run deploy
+```
+
+The build writes the Vite frontend to `dist/`; Wrangler serves that directory as the Worker asset binding.
+
+## Preview security
+
+Markdown preview disables raw HTML and sanitizes generated markup with DOMPurify. HTML preview is rendered in an iframe with an empty `sandbox` policy and a restrictive content-security policy. Preview JavaScript is intentionally disabled.
+
+## Scope
+
+Kiwibin intentionally stays small: no accounts, server-side rendering, collaborative editing, large editor framework, or arbitrary JavaScript execution in previews.

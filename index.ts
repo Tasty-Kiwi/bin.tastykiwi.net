@@ -135,12 +135,12 @@ export default {
 
       if (request.method === "GET") {
         const docMatch = pathname.match(/^\/documents\/(.+)$/);
-        if (docMatch) {
+        if (docMatch?.[1]) {
           return addHeaders(await handleGetDocument(docMatch[1], env), request);
         }
 
         const rawMatch = pathname.match(/^\/raw\/(.+)$/);
-        if (rawMatch) {
+        if (rawMatch?.[1]) {
           return addHeaders(await handleGetRaw(rawMatch[1], env), request);
         }
       }
