@@ -159,7 +159,10 @@ describe("Worker representations", () => {
     );
 
     expect(response.status).toBe(200);
-    await expect(response.text()).resolves.toBe("<h1>rendered</h1>");
+    const html = await response.text();
+    expect(html).toContain("<!doctype html>");
+    expect(html).toContain('<style>html,body{background:#fff;color:#111;font:16px/1.5 system-ui,sans-serif;margin:0;padding:1rem}img{max-width:100%}</style>');
+    expect(html).toContain("<body><h1>rendered</h1></body>");
     expect(response.headers.get("Content-Security-Policy")).toContain("sandbox");
     expect(response.headers.get("Content-Security-Policy")).toContain("default-src 'none'");
     expect(response.headers.get("Referrer-Policy")).toBe("no-referrer");

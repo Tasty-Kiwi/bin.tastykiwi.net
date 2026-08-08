@@ -14,6 +14,10 @@ import {
   parseDocumentResourceRoute,
   type CanonicalPasteRoute,
 } from "./worker/routes";
+import {
+  buildHtmlPreviewDocument,
+  STANDALONE_HTML_CSP,
+} from "./shared/html-preview";
 
 export interface Env {
   STORAGE: KVNamespace;
@@ -31,16 +35,6 @@ const DEFAULT_CONFIG = {
   DOCUMENT_EXPIRE_TTL: 60 * 60 * 24 * 365,
   MAX_DOCUMENT_SIZE: 1_048_576,
 };
-
-const STANDALONE_HTML_CSP = [
-  "sandbox",
-  "default-src 'none'",
-  "style-src 'unsafe-inline'",
-  "img-src data: blob:",
-  "font-src data:",
-  "form-action 'none'",
-  "base-uri 'none'",
-].join("; ");
 
 const STATIC_ROOT_PATHS = new Set([
   "/",
@@ -127,7 +121,7 @@ async function handleGetRaw(id: string, env: Env): Promise<Response> {
 async function handleGetHtml(id: string, env: Env): Promise<Response> {
   const content = await getDocumentContent(id, env.STORAGE, "html");
 
-  return new Response(content, {
+  return new Response(buildHtmlPreviewDocument(content), {
     status: 200,
     headers: {
       "Content-Security-Policy": STANDALONE_HTML_CSP,
