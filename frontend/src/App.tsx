@@ -205,7 +205,7 @@ export function App() {
         language: extensionToHighlightLanguage(extension),
         formatChoice: extensionToFormatChoice(extension),
         previewFormat: extensionToPreviewFormat(extension),
-        view: "code",
+        view: extensionToPreviewFormat(extension) !== null ? "preview" : "code",
         loading: false,
         saving: false,
         error: undefined,
@@ -258,6 +258,9 @@ export function App() {
   const showEditor = state.view === "edit" && !state.error;
   const showPreview = state.view === "preview" && !state.error && state.previewFormat !== null;
   const showCode = state.view === "code" && !state.error;
+  const renderedHtmlPath = state.locked && state.key && state.previewFormat === "html"
+    ? `/html/${encodeURIComponent(state.key)}`
+    : undefined;
 
   const handleViewChange = (view: ViewMode) => {
     if (view === "preview" && !state.previewFormat) {
@@ -281,6 +284,7 @@ export function App() {
         view={state.view}
         previewFormat={state.previewFormat}
         formatChoice={state.formatChoice}
+        renderedHtmlPath={renderedHtmlPath}
         onNew={() => startNewDocument()}
         onSave={() => void handleSave()}
         onDuplicate={handleDuplicate}

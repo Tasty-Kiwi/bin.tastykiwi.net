@@ -1,6 +1,6 @@
 import type { JSX } from "preact";
 
-export type IconName = "leaf" | "plus" | "save" | "copy" | "raw" | "eye" | "code" | "close";
+export type IconName = "leaf" | "plus" | "save" | "copy" | "raw" | "eye" | "code" | "external" | "close";
 
 interface IconProps {
   name: IconName;
@@ -35,6 +35,8 @@ export function Icon({ name, size = 16 }: IconProps): JSX.Element {
       return <svg {...common}><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /></svg>;
     case "code":
       return <svg {...common}><path d="m8 8-4 4 4 4M16 8l4 4-4 4" /></svg>;
+    case "external":
+      return <svg {...common}><path d="M14 5h5v5M19 5l-8 8" /><path d="M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></svg>;
     case "close":
       return <svg {...common}><path d="m6 6 12 12M18 6 6 18" /></svg>;
   }

@@ -7,4 +7,5 @@ if (!root) {
   throw new Error("Kiwibin app root is missing.");
 }
 
+root.replaceChildren();
 render(<App />, root);

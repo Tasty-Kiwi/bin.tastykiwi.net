@@ -10,6 +10,7 @@ export default defineConfig({
     proxy: {
       "/documents": workerOrigin,
       "/raw": workerOrigin,
+      "/html": workerOrigin,
     },
   },
   build: {

@@ -9,6 +9,7 @@ interface ToolbarProps {
   view: ViewMode;
   previewFormat: PreviewFormat;
   formatChoice: FormatChoice;
+  renderedHtmlPath?: string;
   onNew: () => void;
   onSave: () => void;
   onDuplicate: () => void;
@@ -25,6 +26,7 @@ export function Toolbar({
   view,
   previewFormat,
   formatChoice,
+  renderedHtmlPath,
   onNew,
   onSave,
   onDuplicate,
@@ -85,6 +87,18 @@ export function Toolbar({
         <button className="toolbar-button" type="button" aria-label="Raw text" onClick={onRaw} disabled={!hasKey} title="Raw text · Ctrl/Cmd+Shift+R">
           <Icon name="raw" /> <span>Raw</span>
         </button>
+        {renderedHtmlPath && (
+          <a
+            className="toolbar-button"
+            href={renderedHtmlPath}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open rendered page"
+            title="Open rendered page"
+          >
+            <Icon name="external" /> <span>Open rendered page</span>
+          </a>
+        )}
         <button className="toolbar-button" type="button" aria-label="Duplicate and edit" onClick={onDuplicate} disabled={!locked} title="Duplicate and edit · Ctrl/Cmd+D">
           <Icon name="copy" /> <span>Duplicate</span>
         </button>
