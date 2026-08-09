@@ -182,20 +182,6 @@ describe("Worker representations", () => {
     expect(fixture.assetFetch).not.toHaveBeenCalled();
   });
 
-  it("honors the HTML theme opt-out metadata", async () => {
-    const fixture = testEnv(
-      '<meta name="kiwibin-theme" content="none"><h1>unstyled</h1>',
-    );
-    const response = await worker.fetch(
-      new Request("https://example.test/html/abc123"),
-      fixture.env,
-    );
-
-    const html = await response.text();
-    expect(html).not.toContain("background: #002b36");
-    expect(html).toContain("<h1>unstyled</h1>");
-  });
-
   it("serves canonical paste content in the initial HTML response", async () => {
     const fixture = testEnv(
       "# Hello from Kiwibin\n\nThis text should be available without JavaScript.",

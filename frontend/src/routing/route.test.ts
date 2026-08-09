@@ -27,6 +27,23 @@ describe("parseRoute", () => {
     });
   });
 
+  it("parses bare and dark preview anchors", () => {
+    expect(parseRoute("/abc123.html#preview+bare")).toEqual({
+      type: "document",
+      key: "abc123",
+      extension: "html",
+      view: "preview",
+      previewTheme: "bare",
+    });
+    expect(parseRoute("/abc123.html#preview+dark")).toEqual({
+      type: "document",
+      key: "abc123",
+      extension: "html",
+      view: "preview",
+      previewTheme: "dark",
+    });
+  });
+
   it("parses the code anchor", () => {
     expect(parseRoute("/abc123.md#code")).toEqual({
       type: "document",

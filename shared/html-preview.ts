@@ -11,42 +11,13 @@ export const HTML_PREVIEW_CSP = [
 
 export const STANDALONE_HTML_CSP = `sandbox; ${HTML_PREVIEW_CSP}`;
 
-const THEME_META_NAME = "kiwibin-theme";
-const THEME_DISABLED_VALUE = "none";
-const META_TAG_PATTERN = /<meta\b[^>]*>/gi;
-
-export type HtmlPreviewTheme = "auto" | "solarized" | "none";
-
-function readAttribute(tag: string, name: string): string | null {
-  const pattern = new RegExp(
-    `\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'=<>]+))`,
-    "i",
-  );
-  const match = pattern.exec(tag);
-  return match?.[1] ?? match?.[2] ?? match?.[3] ?? null;
-}
-
-export function usesSolarizedTheme(source: string): boolean {
-  for (const tag of source.match(META_TAG_PATTERN) ?? []) {
-    if (readAttribute(tag, "name")?.trim().toLowerCase() !== THEME_META_NAME) {
-      continue;
-    }
-
-    if (readAttribute(tag, "content")?.trim().toLowerCase() === THEME_DISABLED_VALUE) {
-      return false;
-    }
-  }
-
-  return true;
-}
+export type HtmlPreviewTheme = "dark" | "bare";
 
 export function buildHtmlPreviewDocument(
   source: string,
-  theme: HtmlPreviewTheme = "auto",
+  theme: HtmlPreviewTheme = "dark",
 ): string {
-  const themeEnabled = theme === "solarized"
-    || (theme === "auto" && usesSolarizedTheme(source));
-  const themeStyle = themeEnabled
+  const themeStyle = theme === "dark"
     ? `\n    <style>${SOLARIZED_CSS}</style>`
     : "";
 

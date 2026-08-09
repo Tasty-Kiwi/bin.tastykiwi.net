@@ -31,22 +31,11 @@ describe("HTML preview isolation", () => {
     expect(output).toContain("<h1>Report</h1>");
   });
 
-  it("allows the Solarized element theme to be disabled with metadata", () => {
-    const output = buildHtmlPreviewDocument(
-      '<meta content="none" name="kiwibin-theme"><h1>Unthemed</h1>',
-    );
-
-    expect(output).not.toContain("background: #002b36");
-    expect(output).toContain("<h1>Unthemed</h1>");
-  });
-
-  it("allows the viewer to override the metadata default", () => {
-    const source = '<meta name="kiwibin-theme" content="none"><h1>Report</h1>';
-
-    expect(buildHtmlPreviewDocument(source, "solarized")).toContain(
+  it("allows the viewer to request dark or bare rendering", () => {
+    expect(buildHtmlPreviewDocument("<h1>Report</h1>", "dark")).toContain(
       "background: #002b36",
     );
-    expect(buildHtmlPreviewDocument("<h1>Report</h1>", "none")).not.toContain(
+    expect(buildHtmlPreviewDocument("<h1>Report</h1>", "bare")).not.toContain(
       "background: #002b36",
     );
   });

@@ -13,10 +13,14 @@ import {
   formatChoiceToExtension,
   normalizeExtension,
 } from "./routing/extensions";
-import { documentPath, parseRoute, type Route } from "./routing/route";
+import {
+  documentPath,
+  parseRoute,
+  type PreviewTheme,
+  type Route,
+} from "./routing/route";
 import type { AppState, FormatChoice, ViewMode } from "./types/document";
 import { Preview } from "./components/Preview";
-import { usesSolarizedTheme } from "./preview/html";
 
 function createNewState(extension?: string): AppState {
   const normalizedExtension = normalizeExtension(extension);
@@ -62,7 +66,9 @@ export function App() {
   const [route, setRoute] = useState<Route>(() => parseRoute(currentLocation()));
   const [state, setState] = useState<AppState>(() => createNewState());
   const [toast, setToast] = useState<string>();
-  const [htmlThemeOverride, setHtmlThemeOverride] = useState<boolean | null>(null);
+  const [htmlPreviewTheme, setHtmlPreviewTheme] = useState<PreviewTheme>(
+    () => route.type === "document" ? route.previewTheme ?? "dark" : "dark",
+  );
   const pendingNewState = useRef<AppState | null>(null);
   const pendingRouteState = useRef<AppState | null>(null);
   const loadRequest = useRef(0);
@@ -80,10 +86,20 @@ export function App() {
   const routeIdentity = route.type === "document"
     ? `${route.type}:${route.key}:${route.extension ?? ""}`
     : route.type;
+  const routeView = route.type === "document" ? route.view : undefined;
+  const routePreviewTheme = route.type === "document"
+    ? route.previewTheme
+    : undefined;
 
   useEffect(() => {
-    setHtmlThemeOverride(null);
+    setHtmlPreviewTheme("dark");
   }, [routeIdentity]);
+
+  useEffect(() => {
+    if (route.type === "document" && routeView !== "code") {
+      setHtmlPreviewTheme(routePreviewTheme ?? "dark");
+    }
+  }, [route.type, routeView, routePreviewTheme]);
 
   useEffect(() => {
     document.title = state.key ? `kiwibin · ${state.key}` : "kiwibin";
@@ -268,11 +284,7 @@ export function App() {
   const showEditor = state.view === "edit" && !state.error;
   const showPreview = state.view === "preview" && !state.error && state.previewFormat !== null;
   const showCode = state.view === "code" && !state.error;
-  const htmlThemeDefault = useMemo(
-    () => usesSolarizedTheme(state.content),
-    [state.content],
-  );
-  const htmlThemeEnabled = htmlThemeOverride ?? htmlThemeDefault;
+  const htmlThemeEnabled = htmlPreviewTheme === "dark";
   const renderedHtmlPath = state.locked && state.key && state.previewFormat === "html"
     ? `/html/${encodeURIComponent(state.key)}`
     : undefined;
@@ -283,10 +295,27 @@ export function App() {
     }
 
     if (state.locked && state.key) {
-      const hash = view === "preview" ? "#preview" : "#code";
+      const hash = view === "preview"
+        ? state.previewFormat === "html"
+          ? `#preview+${htmlPreviewTheme}`
+          : "#preview"
+        : "#code";
       window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}${hash}`);
     }
     setState((current) => ({ ...current, view }));
+  };
+
+  const handleHtmlThemeChange = (enabled: boolean) => {
+    const theme: PreviewTheme = enabled ? "dark" : "bare";
+    setHtmlPreviewTheme(theme);
+
+    if (state.locked && state.key && state.view === "preview") {
+      window.history.replaceState(
+        null,
+        "",
+        `${window.location.pathname}${window.location.search}#preview+${theme}`,
+      );
+    }
   };
 
   return (
@@ -306,7 +335,7 @@ export function App() {
         onDuplicate={handleDuplicate}
         onRaw={handleRaw}
         onViewChange={handleViewChange}
-        onHtmlThemeChange={setHtmlThemeOverride}
+        onHtmlThemeChange={handleHtmlThemeChange}
         onFormatChange={handleFormatChange}
       />
 

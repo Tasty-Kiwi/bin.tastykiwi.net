@@ -27,7 +27,7 @@ export function Preview({ content, format, htmlThemeEnabled }: PreviewProps) {
         sandbox={HTML_PREVIEW_SANDBOX}
         srcDoc={buildHtmlPreviewDocument(
           content,
-          htmlThemeEnabled ? "solarized" : "none",
+          htmlThemeEnabled ? "dark" : "bare",
         )}
       />
     );

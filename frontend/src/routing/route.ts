@@ -1,13 +1,27 @@
+export type PreviewTheme = "bare" | "dark";
+
 export type Route =
   | { type: "new" }
-  | { type: "document"; key: string; extension?: string; view?: "preview" | "code" }
+  | {
+      type: "document";
+      key: string;
+      extension?: string;
+      view?: "preview" | "code";
+      previewTheme?: PreviewTheme;
+    }
   | { type: "raw"; key: string }
   | { type: "unsupported" };
 
 export function parseRoute(location: string): Route {
   const [locationWithoutHash, hash] = location.split("#", 2);
   const path = (locationWithoutHash?.split("?", 1)[0] ?? "/");
-  const view = hash === "preview" || hash === "code" ? hash : undefined;
+  const previewHash = hash?.match(/^preview\+(bare|dark)$/);
+  const previewTheme = previewHash?.[1] as PreviewTheme | undefined;
+  const view = hash === "preview" || previewTheme
+    ? "preview"
+    : hash === "code"
+      ? "code"
+      : undefined;
   if (path === "/" || path === "") {
     return { type: "new" };
   }
@@ -32,6 +46,7 @@ export function parseRoute(location: string): Route {
     key: decodeURIComponent(key),
     ...(extension ? { extension: extension.toLowerCase() } : {}),
     ...(view ? { view } : {}),
+    ...(previewTheme ? { previewTheme } : {}),
   };
 }
 

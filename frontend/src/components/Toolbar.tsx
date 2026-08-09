@@ -88,7 +88,7 @@ export function Toolbar({
           </div>
         )}
 
-        {previewFormat === "html" && (
+        {previewFormat === "html" && view === "preview" && (
           <button
             type="button"
             className={`theme-control${htmlThemeEnabled ? " selected" : ""}`}

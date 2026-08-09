@@ -30,14 +30,9 @@ Rendered HTML is sandboxed with a restrictive Content Security Policy. It suppor
 
 HTML previews use the Solarized theme by default. It styles elements directly rather than requiring classes: `html`, `body`, `header`, `main`, `section`, `article`, `footer`, `h1`–`h4`, `p`, `strong`, `em`, `small`, `ul`, `ol`, `li`, `dl`, `dt`, `dd`, `a`, `blockquote`, `code`, `pre`, `kbd`, `table`, `thead`, `tbody`, `tr`, `th`, `td`, `hr`, `figure`, `figcaption`, `img`, `details`, and `summary`.
 
-Set the initial preview state to unstyled by including this metadata in the HTML:
-
-```html
-<meta name="kiwibin-theme" content="none">
-```
-
 The stylesheet is also available at `/solarized.css` for pages that need to include it explicitly.
-The in-app HTML preview has a Solarized switch that can override the initial state without changing the paste. Standalone `/html/:key` rendering follows the metadata default.
+
+The in-app HTML preview has a Solarized switch that updates the shareable anchor: `#preview+dark` uses the dark theme and `#preview+bare` disables Kiwibin styling. Plain `#preview` uses the default dark theme. Standalone `/html/:key` rendering also uses the default dark theme.
 
 ## Local development
 
