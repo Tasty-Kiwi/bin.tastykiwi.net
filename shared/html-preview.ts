@@ -1,3 +1,5 @@
+import { SOLARIZED_CSS } from "./solarized";
+
 export const HTML_PREVIEW_CSP = [
   "default-src 'none'",
   "style-src 'unsafe-inline'",
@@ -9,17 +11,44 @@ export const HTML_PREVIEW_CSP = [
 
 export const STANDALONE_HTML_CSP = `sandbox; ${HTML_PREVIEW_CSP}`;
 
-const HTML_PREVIEW_STYLE =
-  "html,body{background:#fff;color:#111;font:16px/1.5 system-ui,sans-serif;margin:0;padding:1rem}img{max-width:100%}";
+const THEME_META_NAME = "kiwibin-theme";
+const THEME_DISABLED_VALUE = "none";
+const META_TAG_PATTERN = /<meta\b[^>]*>/gi;
+
+function readAttribute(tag: string, name: string): string | null {
+  const pattern = new RegExp(
+    `\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'=<>]+))`,
+    "i",
+  );
+  const match = pattern.exec(tag);
+  return match?.[1] ?? match?.[2] ?? match?.[3] ?? null;
+}
+
+export function usesSolarizedTheme(source: string): boolean {
+  for (const tag of source.match(META_TAG_PATTERN) ?? []) {
+    if (readAttribute(tag, "name")?.trim().toLowerCase() !== THEME_META_NAME) {
+      continue;
+    }
+
+    if (readAttribute(tag, "content")?.trim().toLowerCase() === THEME_DISABLED_VALUE) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 export function buildHtmlPreviewDocument(source: string): string {
+  const theme = usesSolarizedTheme(source)
+    ? `\n    <style>${SOLARIZED_CSS}</style>`
+    : "";
+
   return `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Security-Policy" content="${HTML_PREVIEW_CSP}">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>${HTML_PREVIEW_STYLE}</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">${theme}
   </head>
   <body>${source}</body>
 </html>`;

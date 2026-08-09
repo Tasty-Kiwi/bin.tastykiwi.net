@@ -11,6 +11,7 @@ export default defineConfig({
       "/documents": workerOrigin,
       "/raw": workerOrigin,
       "/html": workerOrigin,
+      "/solarized.css": workerOrigin,
     },
   },
   build: {

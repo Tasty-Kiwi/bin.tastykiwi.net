@@ -161,11 +161,39 @@ describe("Worker representations", () => {
     expect(response.status).toBe(200);
     const html = await response.text();
     expect(html).toContain("<!doctype html>");
-    expect(html).toContain('<style>html,body{background:#fff;color:#111;font:16px/1.5 system-ui,sans-serif;margin:0;padding:1rem}img{max-width:100%}</style>');
+    expect(html).toContain("background: #002b36");
     expect(html).toContain("<body><h1>rendered</h1></body>");
     expect(response.headers.get("Content-Security-Policy")).toContain("sandbox");
     expect(response.headers.get("Content-Security-Policy")).toContain("default-src 'none'");
     expect(response.headers.get("Referrer-Policy")).toBe("no-referrer");
+  });
+
+  it("serves the shared Solarized element stylesheet", async () => {
+    const fixture = testEnv("hello");
+    const response = await worker.fetch(
+      new Request("https://example.test/solarized.css"),
+      fixture.env,
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toContain("text/css");
+    expect(await response.text()).toContain("blockquote {");
+    expect(fixture.storageGet).not.toHaveBeenCalled();
+    expect(fixture.assetFetch).not.toHaveBeenCalled();
+  });
+
+  it("honors the HTML theme opt-out metadata", async () => {
+    const fixture = testEnv(
+      '<meta name="kiwibin-theme" content="none"><h1>unstyled</h1>',
+    );
+    const response = await worker.fetch(
+      new Request("https://example.test/html/abc123"),
+      fixture.env,
+    );
+
+    const html = await response.text();
+    expect(html).not.toContain("background: #002b36");
+    expect(html).toContain("<h1>unstyled</h1>");
   });
 
   it("serves canonical paste content in the initial HTML response", async () => {

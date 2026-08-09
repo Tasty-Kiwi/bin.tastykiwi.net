@@ -18,6 +18,7 @@ import {
   buildHtmlPreviewDocument,
   STANDALONE_HTML_CSP,
 } from "./shared/html-preview";
+import { SOLARIZED_CSS } from "./shared/solarized";
 
 export interface Env {
   STORAGE: KVNamespace;
@@ -127,6 +128,17 @@ async function handleGetHtml(id: string, env: Env): Promise<Response> {
       "Content-Security-Policy": STANDALONE_HTML_CSP,
       "Content-Type": "text/html; charset=UTF-8",
       "Referrer-Policy": "no-referrer",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+}
+
+function handleGetSolarizedCss(): Response {
+  return new Response(SOLARIZED_CSS, {
+    status: 200,
+    headers: {
+      "Cache-Control": "public, max-age=86400",
+      "Content-Type": "text/css; charset=UTF-8",
       "X-Content-Type-Options": "nosniff",
     },
   });
@@ -299,6 +311,10 @@ export default {
       }
 
       if (request.method === "GET") {
+        if (pathname === "/solarized.css") {
+          return handleGetSolarizedCss();
+        }
+
         const documentId = parseDocumentResourceRoute(pathname, "documents");
         if (documentId) {
           return withApiHeaders(await handleGetDocument(documentId, env));

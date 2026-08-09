@@ -22,10 +22,21 @@ Each paste has a human- and agent-readable canonical page plus specialized repre
 - `GET /:key.:extension` — canonical paste page with a syntax/format hint
 - `GET /raw/:key` — exact stored source as `text/plain`
 - `GET /html/:key` — standalone rendered HTML with scripts disabled
+- `GET /solarized.css` — the default semantic-element theme used by HTML previews
 
 Canonical paste pages contain the escaped source in the initial HTML response. Reading a paste does not require JavaScript, a browser, or knowledge of the `/documents/:key` API. When available, the page advertises its `/raw/:key` alternate; HTML pages also advertise `/html/:key`.
 
 Rendered HTML is sandboxed with a restrictive Content Security Policy. It supports HTML/CSS rendering, but arbitrary JavaScript execution is intentionally not supported.
+
+HTML previews use the Solarized theme by default. It styles elements directly rather than requiring classes: `html`, `body`, `header`, `main`, `section`, `article`, `footer`, `h1`–`h4`, `p`, `strong`, `em`, `small`, `ul`, `ol`, `li`, `dl`, `dt`, `dd`, `a`, `blockquote`, `code`, `pre`, `kbd`, `table`, `thead`, `tbody`, `tr`, `th`, `td`, `hr`, `figure`, `figcaption`, `img`, `details`, and `summary`.
+
+Disable the default theme for a paste by including this metadata in its HTML:
+
+```html
+<meta name="kiwibin-theme" content="none">
+```
+
+The stylesheet is also available at `/solarized.css` for pages that need to include it explicitly.
 
 ## Local development
 
@@ -42,7 +53,7 @@ npm run dev
 npm run dev:worker
 ```
 
-Vite runs at `http://localhost:5173` and proxies `/documents`, `/raw`, and `/html` to the local Worker at `http://127.0.0.1:8787`. Canonical paste routes should be tested through Wrangler, because the Worker injects their initial source representation.
+Vite runs at `http://localhost:5173` and proxies `/documents`, `/raw`, `/html`, and `/solarized.css` to the local Worker at `http://127.0.0.1:8787`. Canonical paste routes should be tested through Wrangler, because the Worker injects their initial source representation.
 
 The full-stack, production-like route is:
 

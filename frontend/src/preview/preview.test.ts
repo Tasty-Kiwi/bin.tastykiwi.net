@@ -23,4 +23,20 @@ describe("HTML preview isolation", () => {
     expect(output).toContain("default-src 'none'");
     expect(output).toContain("form-action 'none'");
   });
+
+  it("applies the Solarized element theme by default", () => {
+    const output = buildHtmlPreviewDocument("<h1>Report</h1>");
+
+    expect(output).toContain("background: #002b36");
+    expect(output).toContain("<h1>Report</h1>");
+  });
+
+  it("allows the Solarized element theme to be disabled with metadata", () => {
+    const output = buildHtmlPreviewDocument(
+      '<meta content="none" name="kiwibin-theme"><h1>Unthemed</h1>',
+    );
+
+    expect(output).not.toContain("background: #002b36");
+    expect(output).toContain("<h1>Unthemed</h1>");
+  });
 });
