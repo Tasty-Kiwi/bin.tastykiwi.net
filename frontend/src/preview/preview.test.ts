@@ -42,4 +42,21 @@ describe("HTML preview isolation", () => {
     expect(light).toContain("color-scheme: light");
     expect(light).toContain("background: #fdf6e3");
   });
+
+  it("injects preview controls into complete HTML documents", () => {
+    const output = buildHtmlPreviewDocument(`<!doctype html>
+<html lang="en">
+  <head><title>Plan</title></head>
+  <body><main><h1>Visible report</h1></main></body>
+</html>`, "light");
+    const document = new DOMParser().parseFromString(output, "text/html");
+
+    expect(document.title).toBe("Plan");
+    expect(document.body.textContent).toContain("Visible report");
+    expect(document.querySelectorAll("html")).toHaveLength(1);
+    expect(document.querySelector("style")?.textContent).toContain(
+      "background: #fdf6e3",
+    );
+    expect(output).toContain("default-src 'none'");
+  });
 });
