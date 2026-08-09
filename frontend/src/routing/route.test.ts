@@ -27,7 +27,7 @@ describe("parseRoute", () => {
     });
   });
 
-  it("parses bare and dark preview anchors", () => {
+  it("parses bare, dark, and light preview anchors", () => {
     expect(parseRoute("/abc123.html#preview+bare")).toEqual({
       type: "document",
       key: "abc123",
@@ -41,6 +41,13 @@ describe("parseRoute", () => {
       extension: "html",
       view: "preview",
       previewTheme: "dark",
+    });
+    expect(parseRoute("/abc123.html#preview+light")).toEqual({
+      type: "document",
+      key: "abc123",
+      extension: "html",
+      view: "preview",
+      previewTheme: "light",
     });
   });
 

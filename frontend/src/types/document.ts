@@ -9,6 +9,7 @@ export interface CreateDocumentResponse {
 }
 
 export type PreviewFormat = "markdown" | "html" | null;
+export type PreviewTheme = "bare" | "dark" | "light";
 export type FormatChoice = "auto" | "text" | "markdown" | "html";
 export type ViewMode = "edit" | "code" | "preview";
 

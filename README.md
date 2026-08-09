@@ -23,6 +23,7 @@ Each paste has a human- and agent-readable canonical page plus specialized repre
 - `GET /raw/:key` — exact stored source as `text/plain`
 - `GET /html/:key` — standalone rendered HTML with scripts disabled
 - `GET /solarized.css` — the default semantic-element theme used by HTML previews
+- `GET /solarized-light.css` — the Solarized Light semantic-element theme
 
 Canonical paste pages contain the escaped source in the initial HTML response. Reading a paste does not require JavaScript, a browser, or knowledge of the `/documents/:key` API. When available, the page advertises its `/raw/:key` alternate; HTML pages also advertise `/html/:key`.
 
@@ -30,9 +31,9 @@ Rendered HTML is sandboxed with a restrictive Content Security Policy. It suppor
 
 HTML previews use the Solarized theme by default. It styles elements directly rather than requiring classes: `html`, `body`, `header`, `main`, `section`, `article`, `footer`, `h1`–`h4`, `p`, `strong`, `em`, `small`, `ul`, `ol`, `li`, `dl`, `dt`, `dd`, `a`, `blockquote`, `code`, `pre`, `kbd`, `table`, `thead`, `tbody`, `tr`, `th`, `td`, `hr`, `figure`, `figcaption`, `img`, `details`, and `summary`.
 
-The stylesheet is also available at `/solarized.css` for pages that need to include it explicitly.
+The stylesheets are also available at `/solarized.css` and `/solarized-light.css` for pages that need to include them explicitly.
 
-The in-app HTML preview has a Solarized switch that updates the shareable anchor: `#preview+dark` uses the dark theme and `#preview+bare` disables Kiwibin styling. Plain `#preview` uses the default dark theme. Standalone `/html/:key` rendering also uses the default dark theme.
+The in-app HTML preview has Dark, Light, and Bare controls that update the shareable anchor. `#preview+dark` and `#preview+light` apply their Solarized theme across the preview and surrounding Kiwibin surface; `#preview+bare` disables Kiwibin styling inside the preview. Plain `#preview` uses the default dark theme. Standalone `/html/:key` rendering also uses the default dark theme.
 
 ## Local development
 
@@ -49,7 +50,7 @@ npm run dev
 npm run dev:worker
 ```
 
-Vite runs at `http://localhost:5173` and proxies `/documents`, `/raw`, `/html`, and `/solarized.css` to the local Worker at `http://127.0.0.1:8787`. Canonical paste routes should be tested through Wrangler, because the Worker injects their initial source representation.
+Vite runs at `http://localhost:5173` and proxies `/documents`, `/raw`, `/html`, `/solarized.css`, and `/solarized-light.css` to the local Worker at `http://127.0.0.1:8787`. Canonical paste routes should be tested through Wrangler, because the Worker injects their initial source representation.
 
 The full-stack, production-like route is:
 

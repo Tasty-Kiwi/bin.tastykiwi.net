@@ -18,7 +18,10 @@ import {
   buildHtmlPreviewDocument,
   STANDALONE_HTML_CSP,
 } from "./shared/html-preview";
-import { SOLARIZED_CSS } from "./shared/solarized";
+import {
+  SOLARIZED_DARK_CSS,
+  SOLARIZED_LIGHT_CSS,
+} from "./shared/solarized";
 
 export interface Env {
   STORAGE: KVNamespace;
@@ -133,8 +136,8 @@ async function handleGetHtml(id: string, env: Env): Promise<Response> {
   });
 }
 
-function handleGetSolarizedCss(): Response {
-  return new Response(SOLARIZED_CSS, {
+function handleGetSolarizedCss(stylesheet: string): Response {
+  return new Response(stylesheet, {
     status: 200,
     headers: {
       "Cache-Control": "public, max-age=86400",
@@ -312,7 +315,11 @@ export default {
 
       if (request.method === "GET") {
         if (pathname === "/solarized.css") {
-          return handleGetSolarizedCss();
+          return handleGetSolarizedCss(SOLARIZED_DARK_CSS);
+        }
+
+        if (pathname === "/solarized-light.css") {
+          return handleGetSolarizedCss(SOLARIZED_LIGHT_CSS);
         }
 
         const documentId = parseDocumentResourceRoute(pathname, "documents");

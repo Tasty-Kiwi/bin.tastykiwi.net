@@ -31,12 +31,15 @@ describe("HTML preview isolation", () => {
     expect(output).toContain("<h1>Report</h1>");
   });
 
-  it("allows the viewer to request dark or bare rendering", () => {
+  it("allows the viewer to request dark, light, or bare rendering", () => {
     expect(buildHtmlPreviewDocument("<h1>Report</h1>", "dark")).toContain(
       "background: #002b36",
     );
     expect(buildHtmlPreviewDocument("<h1>Report</h1>", "bare")).not.toContain(
       "background: #002b36",
     );
+    const light = buildHtmlPreviewDocument("<h1>Report</h1>", "light");
+    expect(light).toContain("color-scheme: light");
+    expect(light).toContain("background: #fdf6e3");
   });
 });

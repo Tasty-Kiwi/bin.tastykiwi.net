@@ -1,14 +1,14 @@
 import { buildHtmlPreviewDocument, HTML_PREVIEW_SANDBOX } from "../preview/html";
-import type { PreviewFormat } from "../types/document";
+import type { PreviewFormat, PreviewTheme } from "../types/document";
 import { renderMarkdown } from "../preview/markdown";
 
 interface PreviewProps {
   content: string;
   format: PreviewFormat;
-  htmlThemeEnabled: boolean;
+  htmlPreviewTheme: PreviewTheme;
 }
 
-export function Preview({ content, format, htmlThemeEnabled }: PreviewProps) {
+export function Preview({ content, format, htmlPreviewTheme }: PreviewProps) {
   if (format === "markdown") {
     return (
       <article
@@ -25,10 +25,7 @@ export function Preview({ content, format, htmlThemeEnabled }: PreviewProps) {
         className="html-preview"
         title="HTML preview"
         sandbox={HTML_PREVIEW_SANDBOX}
-        srcDoc={buildHtmlPreviewDocument(
-          content,
-          htmlThemeEnabled ? "dark" : "bare",
-        )}
+        srcDoc={buildHtmlPreviewDocument(content, htmlPreviewTheme)}
       />
     );
   }

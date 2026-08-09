@@ -81,6 +81,18 @@ select:disabled {
   background: var(--background);
 }
 
+.app-shell.theme-light {
+  color-scheme: light;
+  --background: #fdf6e3;
+  --surface: #eee8d5;
+  --surface-hover: #e7e0cc;
+  --surface-deep: #fdf6e3;
+  --text: #657b83;
+  --text-strong: #002b36;
+  --text-muted: #657b83;
+  --border: #93a1a1;
+}
+
 .server-paste {
   height: 100dvh;
   min-height: 100dvh;
@@ -176,7 +188,8 @@ select:disabled {
 
 .toolbar-button,
 .icon-button,
-.segmented-control button {
+.segmented-control button,
+.theme-selector button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -227,7 +240,7 @@ select:disabled {
 .format-control,
 .format-badge,
 .segmented-control,
-.theme-control {
+.theme-selector {
   grid-column: 1 / -1;
 }
 
@@ -292,30 +305,34 @@ select:disabled {
   box-shadow: inset 0 -2px var(--accent);
 }
 
-.theme-control {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 30px;
-  padding: 0 0.45rem;
-  border: 0;
+.theme-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   border-bottom: 1px solid rgba(88, 110, 117, 0.35);
-  background: transparent;
+}
+
+.theme-selector button {
+  min-height: 30px;
+  padding: 0.25rem;
   color: var(--text-muted);
-  cursor: pointer;
   font-family: var(--mono);
   font-size: 0.68rem;
   text-transform: uppercase;
 }
 
-.theme-control:hover,
-.theme-control:focus-visible {
+.theme-selector button + button {
+  border-left: 1px solid rgba(88, 110, 117, 0.35);
+}
+
+.theme-selector button:hover,
+.theme-selector button:focus-visible,
+.theme-selector button.selected {
   background: var(--surface);
   color: var(--text-strong);
 }
 
-.theme-control.selected span:last-child {
-  color: var(--accent);
+.theme-selector button.selected {
+  box-shadow: inset 0 -2px var(--accent);
 }
 
 .workspace {
@@ -479,7 +496,7 @@ select:disabled {
 
 .html-preview {
   min-height: 100dvh;
-  background: #fff;
+  background: var(--background);
 }
 
 .empty-state {
@@ -539,11 +556,11 @@ select:disabled {
   display: block;
   overflow-x: auto;
   background: transparent;
-  color: #839496;
+  color: var(--text);
 }
 
 .hljs-comment,
-.hljs-quote { color: #586e75; }
+.hljs-quote { color: var(--text-muted); }
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-addition { color: #859900; }
@@ -574,7 +591,7 @@ select:disabled {
 .hljs-link { color: #cb4b16; }
 .hljs-built_in,
 .hljs-deletion { color: #dc322f; }
-.hljs-formula { background: #073642; }
+.hljs-formula { background: var(--surface); }
 .hljs-emphasis { font-style: italic; }
 .hljs-strong { font-weight: 700; }
 

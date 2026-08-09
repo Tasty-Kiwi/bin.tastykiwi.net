@@ -170,14 +170,20 @@ describe("Worker representations", () => {
 
   it("serves the shared Solarized element stylesheet", async () => {
     const fixture = testEnv("hello");
-    const response = await worker.fetch(
-      new Request("https://example.test/solarized.css"),
-      fixture.env,
-    );
+    const [darkResponse, lightResponse] = await Promise.all([
+      worker.fetch(new Request("https://example.test/solarized.css"), fixture.env),
+      worker.fetch(
+        new Request("https://example.test/solarized-light.css"),
+        fixture.env,
+      ),
+    ]);
 
-    expect(response.status).toBe(200);
-    expect(response.headers.get("Content-Type")).toContain("text/css");
-    expect(await response.text()).toContain("blockquote {");
+    expect(darkResponse.status).toBe(200);
+    expect(darkResponse.headers.get("Content-Type")).toContain("text/css");
+    expect(await darkResponse.text()).toContain("background: #002b36");
+    expect(lightResponse.status).toBe(200);
+    expect(lightResponse.headers.get("Content-Type")).toContain("text/css");
+    expect(await lightResponse.text()).toContain("background: #fdf6e3");
     expect(fixture.storageGet).not.toHaveBeenCalled();
     expect(fixture.assetFetch).not.toHaveBeenCalled();
   });

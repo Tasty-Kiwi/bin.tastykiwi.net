@@ -1,4 +1,4 @@
-export const SOLARIZED_CSS = `html {
+export const SOLARIZED_DARK_CSS = `html {
   color-scheme: dark;
   background: #002b36;
   color: #839496;
@@ -249,3 +249,20 @@ summary {
   }
 }
 `;
+
+const SOLARIZED_LIGHT_COLORS: Record<string, string> = {
+  "#00222b": "#eee8d5",
+  "#002b36": "#fdf6e3",
+  "#073642": "#eee8d5",
+  "#586e75": "#93a1a1",
+  "#839496": "#657b83",
+  "#93a1a1": "#586e75",
+  "#eee8d5": "#073642",
+  "#fdf6e3": "#002b36",
+};
+
+export const SOLARIZED_LIGHT_CSS = SOLARIZED_DARK_CSS
+  .replace("color-scheme: dark", "color-scheme: light")
+  .replace(/#[0-9a-f]{6}/gi, (color) =>
+    SOLARIZED_LIGHT_COLORS[color.toLowerCase()] ?? color
+  );

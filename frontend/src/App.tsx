@@ -16,10 +16,14 @@ import {
 import {
   documentPath,
   parseRoute,
-  type PreviewTheme,
   type Route,
 } from "./routing/route";
-import type { AppState, FormatChoice, ViewMode } from "./types/document";
+import type {
+  AppState,
+  FormatChoice,
+  PreviewTheme,
+  ViewMode,
+} from "./types/document";
 import { Preview } from "./components/Preview";
 
 function createNewState(extension?: string): AppState {
@@ -284,7 +288,6 @@ export function App() {
   const showEditor = state.view === "edit" && !state.error;
   const showPreview = state.view === "preview" && !state.error && state.previewFormat !== null;
   const showCode = state.view === "code" && !state.error;
-  const htmlThemeEnabled = htmlPreviewTheme === "dark";
   const renderedHtmlPath = state.locked && state.key && state.previewFormat === "html"
     ? `/html/${encodeURIComponent(state.key)}`
     : undefined;
@@ -305,8 +308,7 @@ export function App() {
     setState((current) => ({ ...current, view }));
   };
 
-  const handleHtmlThemeChange = (enabled: boolean) => {
-    const theme: PreviewTheme = enabled ? "dark" : "bare";
+  const handleHtmlThemeChange = (theme: PreviewTheme) => {
     setHtmlPreviewTheme(theme);
 
     if (state.locked && state.key && state.view === "preview") {
@@ -319,7 +321,7 @@ export function App() {
   };
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${htmlPreviewTheme === "light" ? " theme-light" : ""}`}>
       <Toolbar
         locked={state.locked}
         saving={state.saving}
@@ -328,7 +330,7 @@ export function App() {
         view={state.view}
         previewFormat={state.previewFormat}
         formatChoice={state.formatChoice}
-        htmlThemeEnabled={htmlThemeEnabled}
+        htmlPreviewTheme={htmlPreviewTheme}
         renderedHtmlPath={renderedHtmlPath}
         onNew={() => startNewDocument()}
         onSave={() => void handleSave()}
@@ -348,7 +350,7 @@ export function App() {
           <Preview
             content={state.content}
             format={state.previewFormat}
-            htmlThemeEnabled={htmlThemeEnabled}
+            htmlPreviewTheme={htmlPreviewTheme}
           />
         )}
       </main>

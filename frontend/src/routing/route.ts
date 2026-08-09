@@ -1,4 +1,4 @@
-export type PreviewTheme = "bare" | "dark";
+import type { PreviewTheme } from "../types/document";
 
 export type Route =
   | { type: "new" }
@@ -15,7 +15,7 @@ export type Route =
 export function parseRoute(location: string): Route {
   const [locationWithoutHash, hash] = location.split("#", 2);
   const path = (locationWithoutHash?.split("?", 1)[0] ?? "/");
-  const previewHash = hash?.match(/^preview\+(bare|dark)$/);
+  const previewHash = hash?.match(/^preview\+(bare|dark|light)$/);
   const previewTheme = previewHash?.[1] as PreviewTheme | undefined;
   const view = hash === "preview" || previewTheme
     ? "preview"
