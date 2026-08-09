@@ -64,6 +64,15 @@ export function Toolbar({
           <div className="segmented-control" role="group" aria-label="View mode">
             <button
               type="button"
+              aria-label="Preview paste"
+              className={view === "preview" ? "selected" : ""}
+              onClick={() => onViewChange("preview")}
+              aria-pressed={view === "preview"}
+            >
+              <Icon name="eye" /> <span>Preview</span>
+            </button>
+            <button
+              type="button"
               aria-label={showEditPreviewToggle ? "Edit paste" : "View source"}
               className={view === (showEditPreviewToggle ? "edit" : "code") ? "selected" : ""}
               onClick={() => onViewChange(showEditPreviewToggle ? "edit" : "code")}
@@ -71,15 +80,6 @@ export function Toolbar({
             >
               <Icon name="code" />
               <span>{showEditPreviewToggle ? "Edit" : "Source"}</span>
-            </button>
-            <button
-              type="button"
-              aria-label="Preview paste"
-              className={view === "preview" ? "selected" : ""}
-              onClick={() => onViewChange("preview")}
-              aria-pressed={view === "preview"}
-            >
-              <Icon name="eye" /> <span>Preview</span>
             </button>
           </div>
         )}
