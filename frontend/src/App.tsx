@@ -286,7 +286,10 @@ export function App() {
   );
   const canSave = !state.locked && !state.loading && Boolean(state.content.trim());
   const showEditor = state.view === "edit" && !state.error;
-  const showPreview = state.view === "preview" && !state.error && state.previewFormat !== null;
+  const showPreview = state.view === "preview"
+    && !state.loading
+    && !state.error
+    && state.previewFormat !== null;
   const showCode = state.view === "code" && !state.error;
   const renderedHtmlPath = state.locked && state.key && state.previewFormat === "html"
     ? `/html/${encodeURIComponent(state.key)}`
