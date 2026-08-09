@@ -16,6 +16,7 @@ import {
 import { documentPath, parseRoute, type Route } from "./routing/route";
 import type { AppState, FormatChoice, ViewMode } from "./types/document";
 import { Preview } from "./components/Preview";
+import { usesSolarizedTheme } from "./preview/html";
 
 function createNewState(extension?: string): AppState {
   const normalizedExtension = normalizeExtension(extension);
@@ -61,6 +62,7 @@ export function App() {
   const [route, setRoute] = useState<Route>(() => parseRoute(currentLocation()));
   const [state, setState] = useState<AppState>(() => createNewState());
   const [toast, setToast] = useState<string>();
+  const [htmlThemeOverride, setHtmlThemeOverride] = useState<boolean | null>(null);
   const pendingNewState = useRef<AppState | null>(null);
   const pendingRouteState = useRef<AppState | null>(null);
   const loadRequest = useRef(0);
@@ -74,6 +76,14 @@ export function App() {
       window.removeEventListener("hashchange", handleLocationChange);
     };
   }, []);
+
+  const routeIdentity = route.type === "document"
+    ? `${route.type}:${route.key}:${route.extension ?? ""}`
+    : route.type;
+
+  useEffect(() => {
+    setHtmlThemeOverride(null);
+  }, [routeIdentity]);
 
   useEffect(() => {
     document.title = state.key ? `kiwibin · ${state.key}` : "kiwibin";
@@ -258,6 +268,11 @@ export function App() {
   const showEditor = state.view === "edit" && !state.error;
   const showPreview = state.view === "preview" && !state.error && state.previewFormat !== null;
   const showCode = state.view === "code" && !state.error;
+  const htmlThemeDefault = useMemo(
+    () => usesSolarizedTheme(state.content),
+    [state.content],
+  );
+  const htmlThemeEnabled = htmlThemeOverride ?? htmlThemeDefault;
   const renderedHtmlPath = state.locked && state.key && state.previewFormat === "html"
     ? `/html/${encodeURIComponent(state.key)}`
     : undefined;
@@ -284,12 +299,14 @@ export function App() {
         view={state.view}
         previewFormat={state.previewFormat}
         formatChoice={state.formatChoice}
+        htmlThemeEnabled={htmlThemeEnabled}
         renderedHtmlPath={renderedHtmlPath}
         onNew={() => startNewDocument()}
         onSave={() => void handleSave()}
         onDuplicate={handleDuplicate}
         onRaw={handleRaw}
         onViewChange={handleViewChange}
+        onHtmlThemeChange={setHtmlThemeOverride}
         onFormatChange={handleFormatChange}
       />
 
@@ -298,7 +315,13 @@ export function App() {
         {state.error && <EmptyState message={state.error} actionLabel="New paste" onAction={() => startNewDocument()} />}
         {showEditor && <Editor value={state.content} onChange={(content) => setState((current) => ({ ...current, content }))} />}
         {showCode && <CodeView content={state.content} highlighted={highlighted} />}
-        {showPreview && <Preview content={state.content} format={state.previewFormat} />}
+        {showPreview && (
+          <Preview
+            content={state.content}
+            format={state.previewFormat}
+            htmlThemeEnabled={htmlThemeEnabled}
+          />
+        )}
       </main>
 
       <Toast message={toast} onDismiss={() => setToast(undefined)} />

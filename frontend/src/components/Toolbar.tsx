@@ -9,12 +9,14 @@ interface ToolbarProps {
   view: ViewMode;
   previewFormat: PreviewFormat;
   formatChoice: FormatChoice;
+  htmlThemeEnabled: boolean;
   renderedHtmlPath?: string;
   onNew: () => void;
   onSave: () => void;
   onDuplicate: () => void;
   onRaw: () => void;
   onViewChange: (view: ViewMode) => void;
+  onHtmlThemeChange: (enabled: boolean) => void;
   onFormatChange: (choice: FormatChoice) => void;
 }
 
@@ -26,12 +28,14 @@ export function Toolbar({
   view,
   previewFormat,
   formatChoice,
+  htmlThemeEnabled,
   renderedHtmlPath,
   onNew,
   onSave,
   onDuplicate,
   onRaw,
   onViewChange,
+  onHtmlThemeChange,
   onFormatChange,
 }: ToolbarProps) {
   const showPreviewToggle = previewFormat !== null;
@@ -82,6 +86,20 @@ export function Toolbar({
               <span>{showEditPreviewToggle ? "Edit" : "Source"}</span>
             </button>
           </div>
+        )}
+
+        {previewFormat === "html" && (
+          <button
+            type="button"
+            className={`theme-control${htmlThemeEnabled ? " selected" : ""}`}
+            role="switch"
+            aria-checked={htmlThemeEnabled}
+            aria-label={`${htmlThemeEnabled ? "Disable" : "Enable"} Solarized preview styling`}
+            onClick={() => onHtmlThemeChange(!htmlThemeEnabled)}
+          >
+            <span>Solarized</span>
+            <span aria-hidden="true">{htmlThemeEnabled ? "On" : "Off"}</span>
+          </button>
         )}
 
         <button className="toolbar-button" type="button" aria-label="Raw text" onClick={onRaw} disabled={!hasKey} title="Raw text · Ctrl/Cmd+Shift+R">

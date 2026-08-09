@@ -39,4 +39,15 @@ describe("HTML preview isolation", () => {
     expect(output).not.toContain("background: #002b36");
     expect(output).toContain("<h1>Unthemed</h1>");
   });
+
+  it("allows the viewer to override the metadata default", () => {
+    const source = '<meta name="kiwibin-theme" content="none"><h1>Report</h1>';
+
+    expect(buildHtmlPreviewDocument(source, "solarized")).toContain(
+      "background: #002b36",
+    );
+    expect(buildHtmlPreviewDocument("<h1>Report</h1>", "none")).not.toContain(
+      "background: #002b36",
+    );
+  });
 });

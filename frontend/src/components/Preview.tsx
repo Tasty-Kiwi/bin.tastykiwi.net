@@ -5,9 +5,10 @@ import { renderMarkdown } from "../preview/markdown";
 interface PreviewProps {
   content: string;
   format: PreviewFormat;
+  htmlThemeEnabled: boolean;
 }
 
-export function Preview({ content, format }: PreviewProps) {
+export function Preview({ content, format, htmlThemeEnabled }: PreviewProps) {
   if (format === "markdown") {
     return (
       <article
@@ -24,7 +25,10 @@ export function Preview({ content, format }: PreviewProps) {
         className="html-preview"
         title="HTML preview"
         sandbox={HTML_PREVIEW_SANDBOX}
-        srcDoc={buildHtmlPreviewDocument(content)}
+        srcDoc={buildHtmlPreviewDocument(
+          content,
+          htmlThemeEnabled ? "solarized" : "none",
+        )}
       />
     );
   }
