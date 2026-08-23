@@ -29,6 +29,8 @@ Canonical paste pages contain the escaped source in the initial HTML response. R
 
 Rendered HTML is sandboxed with a restrictive Content Security Policy. It supports HTML/CSS rendering, but arbitrary JavaScript execution is intentionally not supported.
 
+New pastes are retained for 365 days.
+
 HTML previews use the Solarized theme by default. It styles elements directly rather than requiring classes: `html`, `body`, `header`, `main`, `section`, `article`, `footer`, `h1`–`h4`, `p`, `strong`, `em`, `small`, `ul`, `ol`, `li`, `dl`, `dt`, `dd`, `a`, `blockquote`, `code`, `pre`, `kbd`, `table`, `thead`, `tbody`, `tr`, `th`, `td`, `hr`, `figure`, `figcaption`, `img`, `details`, and `summary`.
 
 The stylesheets are also available at `/solarized.css` and `/solarized-light.css` for pages that need to include them explicitly.

@@ -16,6 +16,7 @@ import {
 } from "./worker/routes";
 import {
   buildHtmlPreviewDocument,
+  HTML_PREVIEW_CSP,
   STANDALONE_HTML_CSP,
 } from "./shared/html-preview";
 import {
@@ -29,16 +30,16 @@ export interface Env {
 
   DOCUMENT_KEY_SIZE?: string;
   MAX_DOCUMENT_SIZE?: string;
-  DOCUMENT_EXPIRE_TTL?: string;
 }
 
 export { HTTPError } from "./worker/documents";
 
 const DEFAULT_CONFIG = {
   DOCUMENT_KEY_SIZE: 8,
-  DOCUMENT_EXPIRE_TTL: 60 * 60 * 24 * 365,
   MAX_DOCUMENT_SIZE: 1_048_576,
 };
+
+const DOCUMENT_EXPIRE_TTL_SECONDS = 60 * 60 * 24 * 365;
 
 const STATIC_ROOT_PATHS = new Set([
   "/",
@@ -63,7 +64,6 @@ function generateId(size: number): string {
 function getConfig(env: Env) {
   return {
     DOCUMENT_KEY_SIZE: Number(env.DOCUMENT_KEY_SIZE) || DEFAULT_CONFIG.DOCUMENT_KEY_SIZE,
-    DOCUMENT_EXPIRE_TTL: Number(env.DOCUMENT_EXPIRE_TTL) || DEFAULT_CONFIG.DOCUMENT_EXPIRE_TTL,
     MAX_DOCUMENT_SIZE: Number(env.MAX_DOCUMENT_SIZE) || DEFAULT_CONFIG.MAX_DOCUMENT_SIZE,
   };
 }
@@ -87,7 +87,7 @@ async function handlePost(request: Request, env: Env): Promise<Response> {
   const id = generateId(config.DOCUMENT_KEY_SIZE);
 
   await env.STORAGE.put(`documents:${id}`, content, {
-    expirationTtl: config.DOCUMENT_EXPIRE_TTL,
+    expirationTtl: DOCUMENT_EXPIRE_TTL_SECONDS,
   });
 
   const domain = new URL(request.url).hostname;
@@ -261,15 +261,21 @@ function textError(status: number, message: string): Response {
 }
 
 function htmlError(status: number, message: string): Response {
-  return new Response(`<!doctype html>
-<html lang="en">
-  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>kiwibin</title></head>
-  <body><main><a href="/about.md">kiwibin</a><h1>${escapeHtml(message)}</h1></main></body>
-</html>`, {
+  const document = buildHtmlPreviewDocument(`<header>
+  <a href="/about.md"><strong>kiwibin</strong></a>
+</header>
+<main>
+  <h1>${escapeHtml(message)}</h1>
+  <p><a href="/">Create a new paste</a></p>
+</main>`);
+
+  return new Response(document, {
     status,
     headers: {
       "Cache-Control": "no-cache",
+      "Content-Security-Policy": HTML_PREVIEW_CSP,
       "Content-Type": "text/html; charset=UTF-8",
+      "Referrer-Policy": "no-referrer",
       "X-Content-Type-Options": "nosniff",
       "X-Robots-Tag": "noindex,nofollow",
     },

@@ -87,11 +87,13 @@ class TestHTMLRewriter {
 interface TestEnvironment {
   env: Env;
   storageGet: ReturnType<typeof vi.fn>;
+  storagePut: ReturnType<typeof vi.fn>;
   assetFetch: ReturnType<typeof vi.fn>;
 }
 
 function testEnv(content: string | null): TestEnvironment {
   const storageGet = vi.fn().mockResolvedValue(content);
+  const storagePut = vi.fn().mockResolvedValue(undefined);
   const assetFetch = vi.fn(async (request: Request) => {
     const url = new URL(request.url);
     if (url.pathname === "/index.html") {
@@ -107,11 +109,12 @@ function testEnv(content: string | null): TestEnvironment {
     env: {
       STORAGE: {
         get: storageGet,
-        put: vi.fn(),
+        put: storagePut,
       },
       ASSETS: { fetch: assetFetch },
     } as unknown as Env,
     storageGet,
+    storagePut,
     assetFetch,
   };
 }
@@ -125,6 +128,29 @@ afterAll(() => {
 });
 
 describe("Worker representations", () => {
+  it("stores new pastes for one year", async () => {
+    const fixture = testEnv(null);
+    const response = await worker.fetch(
+      new Request("https://example.test/documents", {
+        method: "POST",
+        headers: {
+          "Content-Length": "5",
+          "Content-Type": "text/plain; charset=UTF-8",
+        },
+        body: "hello",
+      }),
+      fixture.env,
+    );
+
+    expect(response.status).toBe(200);
+    expect(fixture.storagePut).toHaveBeenCalledOnce();
+    expect(fixture.storagePut).toHaveBeenCalledWith(
+      expect.stringMatching(/^documents:[a-zA-Z0-9]{8}$/),
+      "hello",
+      { expirationTtl: 31_536_000 },
+    );
+  });
+
   it("keeps the JSON API response compatible", async () => {
     const fixture = testEnv("hello");
     const response = await worker.fetch(
@@ -258,6 +284,10 @@ describe("Worker representations", () => {
     expect(response.headers.get("Content-Type")).toContain("text/html");
     const html = await response.text();
     expect(html).toContain("Document &quot;missing&quot; not found.");
+    expect(html).toContain("color-scheme: dark");
+    expect(html).toContain("background: #002b36");
+    expect(html).toContain('href="/about.md"');
+    expect(html).toContain('href="/"');
     expect(html).not.toContain("index-test.js");
     expect(fixture.assetFetch).not.toHaveBeenCalled();
   });
